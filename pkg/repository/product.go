@@ -61,3 +61,12 @@ func (p *ProductRepository) DeleteProduct(productID int) error {
 	}
 	return nil
 }
+
+func (p *ProductRepository) GetProductByID(productID int) (models.ProductResponse, error) {
+	var product models.ProductResponse
+	err := p.DB.Exec("SELECT * FROM products WHERE id = ?", productID).Scan(&product)
+	if err.RowsAffected < 1 {
+		return models.ProductResponse{}, errors.New(fmt.Sprintf("product with productID %d does not exist", productID))
+	}
+	return product, nil
+}
